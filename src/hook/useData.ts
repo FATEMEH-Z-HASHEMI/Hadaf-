@@ -25,7 +25,7 @@ export const useDomainsData = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
+    // for Delete Domain
     const handleDelete = async (id: string) => {
         try {
             await deleteDomain(id);
@@ -35,7 +35,7 @@ export const useDomainsData = () => {
             setError(err.message);
         }
     };
-
+    // for Sort Domain
     const sortData = useCallback((option: 'ascending' | 'descending') => {
         setSortOption(option);
         const sorted = [...data].sort((a, b) => {

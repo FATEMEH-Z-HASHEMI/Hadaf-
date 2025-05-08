@@ -10,8 +10,14 @@ interface OrderProps {
 }
 
 const options = [
-  { label: 'order by ascending', value: 'ascending' },
-  { label: 'order by descending', value: 'descending' }
+  {
+    label: 'order by ascending',
+    value: 'ascending'
+  },
+  {
+    label: 'order by descending',
+    value: 'descending'
+  }
 ];
 
 const theme = createTheme({

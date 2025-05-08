@@ -29,7 +29,7 @@ const handleResponse = (response: AxiosResponse<any[]>): any[] => {
 
 export const getDomainsData = (): Promise<any[]> => fetchData("/domain", []);
 
-//DeleteDomain
+// DeleteDomain
 
 export const deleteDomain = async (id: string): Promise<void> => {
   try {
@@ -40,7 +40,8 @@ export const deleteDomain = async (id: string): Promise<void> => {
   }
 };
 
-//AddDomain
+// AddDomain
+// Refresh the page after adding the new domain.
 
 export const addDomain = async (domainData: {
   domain: string;
