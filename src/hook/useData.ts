@@ -11,6 +11,7 @@ export const useDomainsData = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const response = await getDomainsData();
             setData(response);
             setSortedData(response);
@@ -52,6 +53,7 @@ export const useDomainsData = () => {
         error, 
         loading, 
         handleDelete, 
-        sortData 
+        sortData,
+        fetchData
     };
 };

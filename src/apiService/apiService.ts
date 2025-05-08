@@ -39,3 +39,24 @@ export const deleteDomain = async (id: string): Promise<void> => {
       throw error;
   }
 };
+
+//AddDomain
+
+export const addDomain = async (domainData: {
+  domain: string;
+  status: string;
+  isActive: boolean;
+}): Promise<any> => {
+  try {
+    const response = await axios.post(`${baseUrl}/domain`, {
+      domain: domainData.domain,
+      status: domainData.status,
+      isActive: domainData.isActive,
+      createdDate: Math.floor(Date.now() / 1000) // زمان فعلی به صورت timestamp
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding domain:', error);
+    throw error;
+  }
+};

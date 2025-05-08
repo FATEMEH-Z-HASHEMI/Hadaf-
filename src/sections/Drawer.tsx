@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import { Drawer } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { addDomain } from '../apiService/apiService';
+import { useDomainsData } from '../hook/useData';
 
 interface DrawerMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onAddDomain: (domain: string) => Promise<boolean>;
 }
 
 export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
-    
   const theme = useTheme();
   const [domain, setDomain] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { fetchData } = useDomainsData();
 
   const handleClose = () => {
     setDomain('');
@@ -19,7 +23,7 @@ export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
     onClose();
   };
 
-  const handleAddDomain = () => {
+  const handleAddDomain = async () => {
     if (!domain.trim()) {
       setError('Domain is required');
       return;
@@ -30,9 +34,24 @@ export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
       return;
     }
 
-    console.log('Adding domain:', domain);
-    
-    handleClose();
+    setIsSubmitting(true);
+    try {
+      const newDomain = {
+        domain: domain.trim(),
+        status: "pending",
+        isActive: false
+      };
+
+      await addDomain(newDomain);
+      
+      await fetchData();
+      
+      handleClose();
+    } catch (err) {
+      setError(err.message || 'Failed to add domain');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +87,7 @@ export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
             placeholder='Ex: https://www.bridgedmedia'
             value={domain}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
           {error && (
             <p className="text-red-500 text-sm mt-2">
@@ -79,7 +99,8 @@ export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
         <div className='flex flex-row items-center justify-center ml-auto gap-4'>
           <button 
             onClick={handleClose}
-            className='py-2 w-24 text-center bg-white text-gray-500 border border-gray-300 shadow-md rounded-sm hover:border-gray-400 hover:text-black hover:shadow-lg transition-all duration-300 hover:rounded-md'
+            disabled={isSubmitting}
+            className='py-2 w-24 text-center bg-white text-gray-500 border border-gray-300 shadow-md rounded-sm hover:border-gray-400 hover:text-black hover:shadow-lg transition-all duration-300 hover:rounded-md disabled:opacity-50'
           >
             <p className='text-sm'>
                 Cancel
@@ -87,15 +108,15 @@ export const DrawerMenu = ({ isOpen, onClose }: DrawerMenuProps) => {
           </button>
           <button 
             onClick={handleAddDomain}
-            disabled={!domain.trim() || !domain.match(/^https?:\/\//)}
+            disabled={!domain.trim() || !domain.match(/^https?:\/\//) || isSubmitting}
             className={`py-2 w-24 text-center shadow-md rounded-sm hover:shadow-lg transition-all duration-300 hover:rounded-md ${
-              !domain.trim() || !domain.match(/^https?:\/\//)
+              !domain.trim() || !domain.match(/^https?:\/\//) || isSubmitting
                 ? 'bg-gray-300 cursor-not-allowed'
                 : 'bg-[#319AF6] hover:bg-[#258eea] hover:text-bgColor'
             }`}
           >
             <p className='text-sm'>
-                Add
+              {isSubmitting ? 'Adding...' : 'Add'}
             </p>
           </button>
         </div>
