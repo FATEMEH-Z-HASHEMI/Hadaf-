@@ -11,7 +11,6 @@ interface UrlBoxProps {
 
 const UrlBox: React.FC<UrlBoxProps> = ({ searchTerm = '' }) =>  {
     const { data, error, loading, handleDelete, sortData } = useDomainsData();
-    console.log(data)
 
     const filteredData = data?.filter(item => 
         item.domain.toLowerCase().includes(searchTerm.toLowerCase())
