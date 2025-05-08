@@ -52,7 +52,7 @@ export const addDomain = async (domainData: {
       domain: domainData.domain,
       status: domainData.status,
       isActive: domainData.isActive,
-      createdDate: Math.floor(Date.now() / 1000) // زمان فعلی به صورت timestamp
+      createdDate: Math.floor(Date.now() / 1000)
     });
     return response.data;
   } catch (error) {
