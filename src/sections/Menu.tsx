@@ -3,6 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useRouter } from 'next/navigation';
 
 interface LongMenuProps {
     domainId: string;
@@ -16,7 +17,8 @@ const options = [
     },
     {
         label: "Verify",
-        color: "black"
+        color: "black",
+        action: "verify"
     },
     {
         label: "Install script",
@@ -24,7 +26,8 @@ const options = [
     },
     { 
         label: "Delete",
-        color: "#c20404"
+        color: "#c20404",
+        action: "delete"
     }
 ];
 
@@ -33,6 +36,7 @@ const ITEM_HEIGHT = 48;
 export default function LongMenu({ domainId, onDelete }: LongMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const router = useRouter();
     
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -42,8 +46,17 @@ export default function LongMenu({ domainId, onDelete }: LongMenuProps) {
         setAnchorEl(null);
     };
 
-    const handleDelete = () => {
-        onDelete(domainId);
+    const handleAction = (action: string) => {
+        switch(action) {
+            case 'delete':
+                onDelete(domainId);
+                break;
+            case 'verify':
+                router.push(`/verify-domain/${domainId}`);
+                break;
+            default:
+                break;
+        }
         handleClose();
     };
 
@@ -81,7 +94,7 @@ export default function LongMenu({ domainId, onDelete }: LongMenuProps) {
                     <MenuItem 
                         key={option.label}
                         disabled={option.disabled}
-                        onClick={option.label === "Delete" ? handleDelete : handleClose}
+                        onClick={() => option.action && handleAction(option.action)}
                         sx={{
                             color: option.color || 'inherit',
                             '&.Mui-disabled': {
